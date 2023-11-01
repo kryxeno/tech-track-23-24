@@ -1,9 +1,17 @@
+import navMapping from "@/mappings/nav-mapping"
+import Link from "next/link"
 import styled from "styled-components"
 
 const Navigation = () => {
   return (
     <Wrapper>
-      <NavList></NavList>
+      <NavList>
+        {navMapping.map(({ label, path }) => (
+          <li key={label}>
+            <Link href={path}>{label}</Link>
+          </li>
+        ))}
+      </NavList>
     </Wrapper>
   )
 }

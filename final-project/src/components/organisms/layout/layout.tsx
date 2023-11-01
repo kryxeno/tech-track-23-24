@@ -2,10 +2,16 @@ import styled from "styled-components"
 import DynamicHeader from "./dynamic-header"
 import Navigation from "./navigation"
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = ({
+  children,
+  title
+}: {
+  children: React.ReactNode
+  title: string
+}) => {
   return (
     <>
-      <DynamicHeader />
+      <DynamicHeader title={title} />
       <Wrapper>
         <Navigation />
         <Content>{children}</Content>
@@ -14,7 +20,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const Wrapper = styled.main``
+const Wrapper = styled.main`
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+`
 
 const Content = styled.section``
 

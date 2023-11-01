@@ -1,107 +1,395 @@
-:root {
-  --max-width: 1100px;
-  --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
-    'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
-    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
-
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-
-  --primary-glow: conic-gradient(
-    from 180deg at 50% 50%,
-    #16abff33 0deg,
-    #0885ff33 55deg,
-    #54d6ff33 120deg,
-    #0071ff33 160deg,
-    transparent 360deg
-  );
-  --secondary-glow: radial-gradient(
-    rgba(255, 255, 255, 1),
-    rgba(255, 255, 255, 0)
-  );
-
-  --tile-start-rgb: 239, 245, 249;
-  --tile-end-rgb: 228, 232, 233;
-  --tile-border: conic-gradient(
-    #00000080,
-    #00000040,
-    #00000030,
-    #00000020,
-    #00000010,
-    #00000010,
-    #00000080
-  );
-
-  --callout-rgb: 238, 240, 241;
-  --callout-border-rgb: 172, 175, 176;
-  --card-rgb: 180, 185, 188;
-  --card-border-rgb: 131, 134, 135;
+@font-face {
+  font-family: "SoinSansNeue";
+  src: url("https://static.kabood.io/static-v2/fonts/SoinSansNeue-Thin.otf?version_tag=dmdddoxmnv")
+    format("opentype");
+  font-weight: 100;
+  font-style: normal;
+  descent-override: 18%;
+  font-display: swap;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+/*
+    1. Use a more-intuitive box-sizing model.
+  */
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
-    --primary-glow: radial-gradient(rgba(1, 65, 255, 0.4), rgba(1, 65, 255, 0));
-    --secondary-glow: linear-gradient(
-      to bottom right,
-      rgba(1, 65, 255, 0),
-      rgba(1, 65, 255, 0),
-      rgba(1, 65, 255, 0.3)
-    );
+/*
+    2. Remove default margin
+  */
+* {
+  margin: 0;
+  padding: 0;
+}
 
-    --tile-start-rgb: 2, 13, 46;
-    --tile-end-rgb: 2, 5, 19;
-    --tile-border: conic-gradient(
-      #ffffff80,
-      #ffffff40,
-      #ffffff30,
-      #ffffff20,
-      #ffffff10,
-      #ffffff10,
-      #ffffff80
-    );
+/*
+    3. Allow percentage-based heights in the application
+  */
+html,
+body {
+  height: 100%;
+  font-size: 100%;
+  font-family: var(--kb-font-family);
+}
 
-    --callout-rgb: 20, 20, 20;
-    --callout-border-rgb: 108, 108, 108;
-    --card-rgb: 100, 100, 100;
-    --card-border-rgb: 200, 200, 200;
+/*
+    Typographic tweaks!
+    4. Add accessible line-height
+    5. Improve text rendering
+  */
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+    6. Improve media defaults
+  */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/*
+    7. Remove built-in form typography styles
+  */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  all: unset;
+}
+
+/*
+    8. Avoid text overflows
+  */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: anywhere;
+}
+
+ul {
+  list-style: none;
+}
+
+/*
+    9. Create a root stacking context
+  */
+#__next {
+  height: 100%;
+  isolation: isolate;
+}
+
+main {
+  height: 100%;
+}
+
+/* animation delay for custom tooltips */
+div:has(#ToolTip-Overlay) {
+  animation-delay: 500ms !important;
+  z-index: 1000;
+}
+
+#contentbox,
+#navbox {
+  overflow-y: auto;
+  scrollbar-color: var(--client-primary_color) transparent;
+
+  overflow-y: overlay;
+}
+
+#contentbox::-webkit-scrollbar,
+#navbox::-webkit-scrollbar {
+  background: transparent;
+  width: 9px;
+}
+
+#contentbox::-webkit-scrollbar-thumb,
+#navbox::-webkit-scrollbar-thumb {
+  background-color: var(--client-scrollbar_color);
+  min-height: 8vh;
+  max-height: 8vh;
+  border-radius: 20px;
+}
+
+@media only screen and (max-width: 992px) {
+  #contentbox::-webkit-scrollbar,
+  #navbox::-webkit-scrollbar {
+    display: none;
   }
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+fieldset {
+  border: none;
 }
 
 a {
-  color: inherit;
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+input {
+  font-size: 0.9rem;
+}
+
+[data-g-portal-id] {
+  z-index: 980 !important;
+}
+
+:root {
+  /*  =======ALLE FONT VARIABELEN=======  */
+  --client-h1_font_family: SoinSansNeue;
+  --client-h1_font_size: 3.125rem;
+  --client-h1_color: hsl(0, 0%, 0%);
+  --client-h1_font_weight: 700;
+  --client-h1_font_style: normal;
+  --client-h1_text_transform: initial;
+  --client-h1_line_height: 1.5;
+
+  --client-h2_font_family: SoinSansNeue;
+  --client-h2_font_size: 2rem;
+  --client-h2_color: hsl(0, 0%, 0%);
+  --client-h2_font_weight: 700;
+  --client-h2_font_style: normal;
+  --client-h2_text_transform: initial;
+  --client-h2_line_height: 1.5;
+
+  --client-h3_font_family: SoinSansNeue;
+  --client-h3_font_size: 1.562rem;
+  --client-h3_color: hsl(0, 0%, 0%);
+  --client-h3_font_weight: 500;
+  --client-h3_font_style: normal;
+  --client-h3_text_transform: initial;
+  --client-h3_line_height: 1.5;
+
+  --client-h4_font_family: SoinSansNeue;
+  --client-h4_font_size: 1.2rem;
+  --client-h4_color: hsl(0, 0%, 0%);
+  --client-h4_font_weight: 500;
+  --client-h4_font_style: normal;
+  --client-h4_text_transform: initial;
+  --client-h4_line_height: 1.5;
+
+  --client-p_font_family: SoinSansNeue;
+  --client-p_font_size: 1.125rem;
+  --client-p_color: hsl(0, 0%, 0%);
+  --client-p_font_weight: 400;
+  --client-p_font_style: normal;
+  --client-p_text_transform: none;
+  --client-p_line_height: 1.5;
+
+  --client-category--header_font_family: SoinSansNeue;
+  --client-category--header_font_size: 4.375rem;
+  --client-category--header_color: hsl(0, 0%, 100%);
+  --client-category--header_font_weight: 700;
+  --client-category--header_font_style: normal;
+  --client-category--header_text_transform: initial;
+  --client-category--header_line_height: 1.5;
+
+  --client-menu--category_font_family: SoinSansNeue;
+  --client-menu--category_font_size: 1.2rem;
+  --client-menu--category_font_weight: 500;
+  --client-menu--category_color: hsl(0, 0%, 0%);
+  --client-menu--category_font_style: normal;
+  --client-menu--category_text_transform: initial;
+  --client-menu--category_line_height: 1.5;
+
+  --client-menu--page_font_family: SoinSansNeue;
+  --client-menu--page_font_size: 1rem;
+  --client-menu--page_font_weight: 400;
+  --client-menu--page_font_style: normal;
+  --client-menu--page_color: hsl(0, 0%, 0%);
+  --client-menu--page_text_transform: initial;
+  --client-menu--page_line_height: 1.5;
+
+  --client-card--text_font_family: SoinSansNeue;
+  --client-card--text_font_size: 1.286rem;
+  --client-card--text_font_weight: 700;
+  --client-card--text_color: hsl(0, 0%, 0%);
+  --client-card--font_style: normal;
+  --client-card--text_text_transform: initial;
+  --client-card--text_line_height: 1.5;
+
+  --client-button--text_font_family: var(--client-p_font_family);
+  --client-button--text_font_size: var(--client-p_font_size);
+  --client-button--text_color: #ffffff;
+  --client-button--text_font_weight: 700;
+  --client-button--text_font_style: var(--client-p_font_style);
+  --client-button--text_text_transform: var(--client-p_text_transform);
+  --client-button--text_line_height: var(--client-p_line_height);
+
+  --font-header-weight-bold: 700;
+  --brandGuide-font-a-weight-light: 300;
+  --brandGuide-font-a-weight-bold: 700;
+  /*  =======EINDE FONT VARIABELEN=======  */
+
+  /*  =======ALLE CLIENT VARIABELEN======= */
+  --client-primary_color: hsl(262, 79%, 37%);
+  --client-page_color: hsl(0, 0%, 84%);
+  --client-navigation_color: hsl(270, 67%, 99%);
+  --client-header_color: hsl(268, 100%, 29%);
+  --client-card_color: hsl(0, 0%, 100%);
+  --client-button_color: var(--kb-color-cta);
+  --client-scrollbar_color: var(--client-primary_color);
+  --client-active_link_color: var(--client-primary_color);
+  --client-link_text_color: var(--client-primary_color);
+
+  /*  alle radius settings */
+  --client-card_radius: 5px 5px 5px 5px;
+  --client-image_radius: 5px 5px 5px 5px;
+  --client-video_radius: 5px 5px 5px 5px;
+
+  /*  alle border settings */
+  --client-card_border: 1px;
+  --client-card_border_color: hsl(0, 0%, 97%);
+  --client-image_border: 1px;
+  --client-image_border_color: transparent;
+  --client-video_border: 1px;
+  --client-video_border_color: transparent;
+  --client-button_border: 1px;
+  --client-button_border_color: transparent;
+
+  /*  aspect ratio settings */
+  --client-color_ratio: 1.5;
+
+  /* DEFAULT BACKGROUND VARIABLES */
+  --client-page_background: var(--client-page_color);
+  --client-navigation_background: var(--client-navigation_color);
+  --client-header_background: var(--client-header_color);
+  --client-card_background: var(--client-card_color);
+  --client-button_background: var(--client-button_color);
+  /*  =======EINDE CLIENT VARIABELEN======= */
+
+  /*  =======ALLE KABOOD VARIABELEN======= */
+  /*  alle paddings */
+  --sidebar-width: 17rem;
+
+  --block-padding-top: 8px;
+  --block-padding-bottom: 8px;
+  --block-grid-gap: 1rem;
+
+  --component-padding: 12px;
+  --component-padding-top: 18px;
+  --component-margin: 10px;
+  --section-title-padding: 1rem;
+  --section-bottom-padding: 2rem;
+
+  --content-gutter: max(min(4.5vw, 14rem), 1.5rem);
+  --content-gutter-mobile: 1.5rem;
+
+  --navigation-padding-hor: 3rem;
+  --navigation-padding-ver: 1rem;
+
+  /*  alle grid column templates */
+  --clients-columns: 4rem 0.7fr 1fr 0.5fr 0.5fr 1fr 0.6fr 10rem;
+  --document-columns: 4rem 1fr repeat(4, 7rem);
+  --rootdocument-columns: 4rem 1fr repeat(1, 7rem);
+  --asset-columns: 4.3rem 1.4fr 0.8fr 0.5fr 1.2fr 0.15fr 0.15fr 0.4fr;
+  --billing-columns: 1fr 1fr 1fr 1fr;
+
+  /*  OUTDATED START */
+  --color-cta: hsl(322, 100%, 50%);
+  --color-cta-dark: hsl(322, 100%, 40%);
+  /*  OUTDATED END */
+
+  --kb-edit-border-radius: 4px;
+  --kb-edit-button-size: 25px;
+  --kb-color-cta: hsl(322, 100%, 50%);
+  --kb-color-cta-static: hsl(322, 100%, 50%);
+  --kb-color-primary: hsl(262, 79%, 37%);
+  --kb-color-primary-dark: hsl(262, 79%, 27%);
+  --kb-color-pastel: hsl(261, 100%, 94%);
+  --kb-color-pastelred: hsl(321, 100%, 96%);
+  --kb-color-pastelgreen: hsl(120, 100%, 96%);
+  --kb-color-bluegrey: hsl(220, 2%, 25%);
+  --kb-color-grey: hsl(0, 0%, 46%);
+  --kb-color-mediumgrey: hsl(0, 0%, 75%);
+  --kb-color-lightgrey: hsl(0, 0%, 87%);
+  --kb-assetlist-grey: hsl(0, 0%, 97%);
+  --kb-color-success: hsl(111, 82%, 47%);
+  --kb-color-danger: hsl(0, 100%, 50%);
+  --kb-color-danger-dark: hsl(0, 100%, 40%);
+  --kb-color-danger-pastel: hsl(0, 100%, 55%);
+  --kb-color-notification-succes: hsl(115, 26%, 50%);
+  --kb-color-notification-info: hsl(265, 86%, 32%);
+  --kb-color-notification-danger: hsl(0, 100%, 50%);
+  --kb-color-border: hsl(0, 0%, 81%);
+  --kb-color-owner: hsl(2, 96%, 90%);
+  --kb-color-owner-dark: hsl(2.5, 90.6%, 20.8%);
+  --kb-color-admin: hsl(40, 96%, 90%);
+  --kb-color-admin-dark: hsl(37, 97.8%, 35.1%);
+  --kb-color-editor: hsl(149, 68%, 86%);
+  --kb-color-editor-dark: hsl(149.3, 83%, 20.8%);
+  --kb-color-viewonly: hsl(260, 100%, 94%);
+  --kb-color-viewonly-dark: hsl(260, 100%, 30%);
+  --kb-color-pending: hsl(0, 0%, 87%);
+  --kb-color-pending-dark: hsl(0, 0%, 30%);
+  --kb-color-expired: hsl(0, 25%, 80%);
+  --kb-color-expired-dark: hsl(0, 18%, 27%);
+  --kb-input-focus: #000;
+  --kb-font-family: SoinSansNeue;
+  --kb-font-size-title: 3.5rem;
+  --kb-font-weight-title: 500;
+  --kb-font-size-heading: 1.563rem;
+  --kb-font-size-text: 1.125rem;
+  --kb-shadow-vertical: -1px 0 20px rgba(0, 0, 0, 0.15);
+  --kb-shadow-horizontal: 0 1.5rem 0.6rem -1.25rem rgba(0, 0, 0, 0.15);
+  --kb-shadow-primary: 0 0.8rem 1rem -0.25rem rgba(74, 20, 170, 0.1);
+  --kb-shadow-inset: inset 0 0 10px 0px rgba(74, 20, 170, 0.1);
+  --kb-edit-transition: 0.17s linear;
+
+  /*  =======EINDE KABOOD VARIABELEN======= */
+
+  --plyr-color-main: var(--client-primary_color) !important;
+
+  /*  =======START CUSTOM NOTIFICATION VARIABLES======= */
+  /* See https://fkhadra.github.io/react-toastify/how-to-style */
+
+  --toastify-font-family: var(--kb-font-family) !important;
+  --toastify-text-color-success: var(--kb-color-primary-dark) !important;
+  /*  =======END CUSTOM NOTIFICATION VARIABLES======= */
+}
+
+/*  =======CUSTOM ANIMATIONS======= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(0.4rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    rotate: 360deg;
   }
 }
