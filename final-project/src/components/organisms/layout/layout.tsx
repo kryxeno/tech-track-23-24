@@ -13,7 +13,7 @@ const Layout = ({
     <>
       <DynamicHeader title={title} />
       <Wrapper>
-        <Navigation />
+        <Navigation page={title} />
         <Content>{children}</Content>
       </Wrapper>
     </>
@@ -22,9 +22,14 @@ const Layout = ({
 
 const Wrapper = styled.main`
   display: grid;
-  grid-template-columns: 10rem 1fr;
+  grid-template-columns: auto 1fr;
 `
 
-const Content = styled.section``
+const Content = styled.section`
+  padding: 3rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`
 
 export default Layout

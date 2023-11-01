@@ -1,6 +1,6 @@
 const navMapping = [
   {
-    path: "/home",
+    path: "/",
     label: "Home"
   },
   {
