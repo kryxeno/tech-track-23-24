@@ -14,7 +14,7 @@ const Layout = ({
       <DynamicHeader title={title} />
       <Wrapper>
         <Navigation page={title} />
-        <Content>{children}</Content>
+        <Content id="contentbox">{children}</Content>
       </Wrapper>
     </>
   )

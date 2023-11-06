@@ -100,7 +100,7 @@ div:has(#ToolTip-Overlay) {
 #contentbox,
 #navbox {
   overflow-y: auto;
-  scrollbar-color: var(--client-primary_color) transparent;
+  scrollbar-color: var(--color-primary) transparent;
 
   overflow-y: overlay;
 }
@@ -113,7 +113,7 @@ div:has(#ToolTip-Overlay) {
 
 #contentbox::-webkit-scrollbar-thumb,
 #navbox::-webkit-scrollbar-thumb {
-  background-color: var(--client-scrollbar_color);
+  background-color: var(--color-primary);
   min-height: 8vh;
   max-height: 8vh;
   border-radius: 20px;
@@ -138,9 +138,23 @@ input {
   font-size: 0.9rem;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+}
+
 h1 {
   font-size: 2.5rem;
-  font-weight: 500;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--color-primary);
 }
 
 :root {

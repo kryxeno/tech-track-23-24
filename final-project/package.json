@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "d3": "^7.8.5",
     "next": "14.0.1",
     "prettier": "^3.0.3",
     "react": "^18",
@@ -16,6 +17,7 @@
     "styled-components": "^6.1.0"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
