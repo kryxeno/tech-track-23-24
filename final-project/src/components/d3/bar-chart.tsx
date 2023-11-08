@@ -40,7 +40,7 @@ const Wrapper = styled.div`
   height: 800px;
   display: flex;
   justify-content: center;
-  margin: 1rem;
+  padding: 2rem;
 `
 
 export default BarChart
