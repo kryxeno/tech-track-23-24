@@ -5,7 +5,8 @@ const createBarChart = (
   svgRef: MutableRefObject<SVGSVGElement | null>,
   data: {
     [key: string]: object[]
-  }
+  },
+  dimensions: { width: number; height: number }
 ) => {
   if (!data) return
   const svg = d3.select(svgRef.current)
@@ -26,10 +27,10 @@ const createBarChart = (
   const xScale = d3
     .scaleBand()
     .domain(x as unknown as string[])
-    .range([0, 800])
+    .range([0, dimensions.width])
     .padding(0.25)
 
-  const yScale = d3.scaleLinear().domain([0, 50]).range([450, 0])
+  const yScale = d3.scaleLinear().domain([0, 50]).range([dimensions.height, 0])
   const colorScale = d3
     .scaleLinear()
     .domain([0, 50])
@@ -39,15 +40,12 @@ const createBarChart = (
 
   svg
     .select(".x-axis")
-    .style("transform", "translateY(450px)")
+    .style("transform", `translateY(${dimensions.height}px)`)
     .call(xAxis as any)
 
   const yAxis = d3.axisLeft(yScale)
 
-  svg
-    .select(".y-axis")
-    .style("transform", "translateX(0)")
-    .call(yAxis as any)
+  svg.select(".y-axis").call(yAxis as any)
 
   svg
     .selectAll(".bar")
@@ -56,7 +54,7 @@ const createBarChart = (
     .attr("class", "bar")
     .style("transform", "scale(1, -1)")
     .attr("x", (d, i) => xScale(x[i] as any) as any)
-    .attr("y", -450)
+    .attr("y", -dimensions.height)
     .attr("width", xScale.bandwidth())
     .on("mouseenter", (event, value) => {
       const bar = d3.select(event.currentTarget)
@@ -79,7 +77,7 @@ const createBarChart = (
     .transition()
     .duration(1000)
     .attr("fill", colorScale)
-    .attr("height", (d) => 450 - yScale(d))
+    .attr("height", (d) => dimensions.height - yScale(d))
 }
 
 export default createBarChart
