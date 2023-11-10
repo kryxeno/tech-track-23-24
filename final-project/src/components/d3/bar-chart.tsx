@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react"
-import { createContourGeo } from "@/data/countourGeo"
 import createBarChart from "@/data/barChart"
 import styled from "styled-components"
 import useResizeObserver from "../hooks/useResizeObserver"
@@ -12,8 +11,6 @@ const BarChart = ({ data }: { data: { [key: string]: object[] } }) => {
 
   useEffect(() => {
     if (!dimensions) return
-    console.log(dimensions)
-
     createBarChart(svgRef, data, dimensions)
   }, [data, dimensions])
 
