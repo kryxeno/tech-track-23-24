@@ -43,9 +43,19 @@ const createBarChart = (
     .style("transform", `translateY(${dimensions.height}px)`)
     .call(xAxis as any)
 
-  const yAxis = d3.axisLeft(yScale)
+  const yAxis = d3.axisRight(yScale).tickSize(dimensions.width)
 
-  svg.select(".y-axis").call(yAxis as any)
+  svg
+    .select(".y-axis")
+    .call(yAxis as any)
+    .call((g) => g.select(".domain").remove())
+    .call((g) =>
+      g
+        .selectAll(".tick:not(:first-of-type) line")
+        .attr("stroke-opacity", 0.5)
+        .attr("stroke-dasharray", "2,2")
+    )
+    .call((g) => g.selectAll(".tick text").attr("x", 4).attr("dy", -4))
 
   svg
     .selectAll(".bar")
