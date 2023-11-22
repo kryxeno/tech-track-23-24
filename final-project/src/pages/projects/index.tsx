@@ -3,6 +3,7 @@ import Hw2 from "@/components/organisms/homework/project-2"
 import Hw3 from "@/components/organisms/homework/project-3"
 import Hw4 from "@/components/organisms/homework/project-4"
 import Layout from "@/components/organisms/layout/layout"
+import axios from "axios"
 import styled from "styled-components"
 
 interface Props {
@@ -10,19 +11,16 @@ interface Props {
 }
 
 export const getServerSideProps = async () => {
-  const res = await fetch("https://api.spacexdata.com/v5/launches/past")
-  const data = await res.json()
+  const res = await axios.get("https://api.spacexdata.com/v5/launches")
 
   return {
     props: {
-      data
+      data: res.data
     }
   }
 }
 
 const Home = ({ data }: Props) => {
-  // console.log({ data })
-
   return (
     <Layout title="Projects">
       <Header>
