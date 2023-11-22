@@ -192,6 +192,7 @@ const Year = styled.section`
 
 const Day = styled.section<{ week?: number; year: number; size: number }>`
   display: flex;
+  transition: padding 0.3s;
   padding: 2rem calc(0.15rem * ${({ size }) => size});
   position: relative;
   background-color: ${({ year }) => (year % 2 === 1 ? `#222` : `#333`)};
