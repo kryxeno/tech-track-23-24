@@ -5,7 +5,7 @@ export const getRocketImage = (name: string) => {
     case "Falcon 9":
       return "/falcon_9_payload_block5.svg"
     case "Falcon Heavy":
-      return "/falcon_heavy.svg"
+      return "/falcon_heavy_b5.svg"
     case "Starship":
       return "/starship.svg"
     default:

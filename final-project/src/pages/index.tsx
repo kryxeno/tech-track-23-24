@@ -4,7 +4,7 @@ import Layout from "@/components/organisms/layout/layout"
 import { onWheel } from "@/utils/mouse"
 import axios from "axios"
 import { InferGetServerSidePropsType } from "next"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import styled from "styled-components"
 
 export const getServerSideProps = async () => {
@@ -23,18 +23,22 @@ const Home = ({
   launches,
   rockets
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  console.log(launches, rockets)
-
+  const [launch, setLaunch] = useState(null)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   return (
     <Layout title="Home" padding="0">
       <Grid onWheel={(e) => onWheel(e as unknown as WheelEvent, scrollRef)}>
-        <LargeTimeline />
+        <LargeTimeline
+          launches={launches}
+          launch={launch}
+          clear={() => setLaunch(null)}
+        />
         <SmallTimeline
           launches={launches}
           rockets={rockets}
           scrollRef={scrollRef}
+          setLaunch={setLaunch}
         />
       </Grid>
     </Layout>
@@ -43,7 +47,7 @@ const Home = ({
 
 const Grid = styled.main`
   display: grid;
-  grid-template-rows: 1fr 28rem;
+  grid-template-rows: 1fr 18rem;
 `
 
 export default Home

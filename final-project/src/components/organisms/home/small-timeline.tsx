@@ -4,7 +4,7 @@ import Image from "next/image"
 import React, { useRef, useState } from "react"
 import styled from "styled-components"
 
-const SmallTimeline = ({ launches, rockets, scrollRef }: any) => {
+const SmallTimeline = ({ launches, rockets, scrollRef, setLaunch }: any) => {
   const [size, setSize] = useState(1)
   const initialYear =
     launches.length > 0 ? launches[0].date_utc.slice(0, 4) : ""
@@ -74,7 +74,7 @@ const SmallTimeline = ({ launches, rockets, scrollRef }: any) => {
           const year = parseInt(start) + yearIndex
           const { daysInYear, monthDays } = getAllDaysInYear(year)
           return (
-            <Year key={yearIndex}>
+            <Year key={yearIndex} id={`${year}`}>
               <div>
                 <h2>{year}</h2>
               </div>
@@ -82,6 +82,9 @@ const SmallTimeline = ({ launches, rockets, scrollRef }: any) => {
                 const launchesThisDay = launches.filter(
                   (d: { date_utc: string }) =>
                     d.date_utc.slice(0, 10) === date.toISOString().slice(0, 10)
+                )
+                const rocket = rockets.find(
+                  (r: any) => r.id === launchesThisDay[0]?.rocket
                 )
                 return (
                   <Day
@@ -101,20 +104,31 @@ const SmallTimeline = ({ launches, rockets, scrollRef }: any) => {
                       <h3>{monthNumberToShorthand(monthDays[dayIndex + 1])}</h3>
                     )}
                     {launchesThisDay.length > 0 && (
-                      <RocketWrapper>
-                        {launchesThisDay.map((d: any) => {
-                          const rocket = rockets.find(
-                            (r: any) => r.id === d.rocket
-                          )
-                          return (
-                            <Image
-                              key={d.id}
-                              src={getRocketImage(rocket.name)}
-                              alt="rocket"
-                              fill={true}
-                            />
-                          )
-                        })}
+                      <RocketWrapper
+                        onClick={() => setLaunch(launchesThisDay[0].id)}
+                      >
+                        <Rocket key={launchesThisDay[0]?.id}>
+                          <Image
+                            src={getRocketImage(rocket.name)}
+                            alt="rocket"
+                            fill={true}
+                          />
+                          <Image src={"/smoke.png"} alt="smoke" fill={true} />
+                          {rocket.name === "Falcon Heavy" && (
+                            <>
+                              <Image
+                                src={"/smoke.png"}
+                                alt="smoke"
+                                fill={true}
+                              />
+                              <Image
+                                src={"/smoke.png"}
+                                alt="smoke"
+                                fill={true}
+                              />
+                            </>
+                          )}
+                        </Rocket>
                       </RocketWrapper>
                     )}
                   </Day>
@@ -151,7 +165,7 @@ const Wrapper = styled.section`
       color: #fff;
       height: 100%;
       width: 4rem;
-      font-size: 2rem;
+      font-size: 1.2rem;
       cursor: pointer;
     }
   }
@@ -214,14 +228,48 @@ const Day = styled.section<{ week?: number; year: number; size: number }>`
   }
 `
 
-const RocketWrapper = styled.div`
-  position: absolute;
+const Rocket = styled.div`
   height: 70%;
-  width: 5rem;
-  top: 15%;
+  translate: 0 30%;
+  transition: translate 1s ease-in-out;
+  position: relative;
+
+  img:not(:first-child) {
+    z-index: -1;
+    translate: 4px 90%;
+    scale: 10 1.5;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  img:nth-child(2) {
+    transform: scaleX(-1);
+    translate: -4px 90%;
+  }
+  img:nth-child(3) {
+    translate: -4px 90%;
+  }
+  img:nth-child(4) {
+    translate: 13px 90%;
+  }
+`
+
+const RocketWrapper = styled.div`
+  cursor: pointer;
+  position: absolute;
+  height: 100%;
+  width: 2.2rem;
   z-index: 3;
+  top: 0;
   left: 50%;
-  translate: -50%;
+  transform: translate(-50%, 0);
+  &:hover ${Rocket} {
+    translate: 0 -40%;
+    img:not(:first-child) {
+      opacity: 1;
+    }
+  }
+  overflow: hidden;
 `
 
 export default SmallTimeline
