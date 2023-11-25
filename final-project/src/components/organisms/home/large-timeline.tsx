@@ -1,13 +1,16 @@
+import { Launch } from "@/data/api/v4"
 import { Close } from "grommet-icons"
 import styled from "styled-components"
 
 const LargeTimeline = ({
   launch,
   launches,
+  year,
   clear
 }: {
-  launch: any
-  launches: any[]
+  launch: string | null
+  launches: Launch[]
+  year: number
   clear: () => void
 }) => {
   const currentLaunch = launches.find((l) => l.id === launch)
@@ -16,17 +19,20 @@ const LargeTimeline = ({
     <Wrapper>
       <Header>
         <h1>{currentLaunch?.name ?? "No launch selected"}</h1>
+        <h2>{year}</h2>
         <ButtonWrapper onClick={clear}>
           <Close color="#000" />
         </ButtonWrapper>
       </Header>
       {currentLaunch && (
-        <Info>{currentLaunch.details ?? <i>No details available</i>}</Info>
+        <>
+          <Info>{currentLaunch.details ?? <i>No details available</i>}</Info>
+        </>
       )}
     </Wrapper>
   )
 }
-
+// MAKE BG IMAGE OF THE LAUNCH
 const Wrapper = styled.section`
   display: flex;
   flex-direction: column;

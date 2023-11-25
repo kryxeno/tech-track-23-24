@@ -2,19 +2,18 @@ import LargeTimeline from "@/components/organisms/home/large-timeline"
 import SmallTimeline from "@/components/organisms/home/small-timeline"
 import Layout from "@/components/organisms/layout/layout"
 import { onWheel } from "@/utils/mouse"
-import axios from "axios"
 import { InferGetServerSidePropsType } from "next"
 import { useRef, useState } from "react"
 import styled from "styled-components"
+import { getLaunches, getRockets } from "@/data/api/v4"
 
 export const getServerSideProps = async () => {
-  const launches = await axios.get("https://api.spacexdata.com/v4/launches")
-  const rockets = await axios.get("https://api.spacexdata.com/v4/rockets")
-
+  const launches = await getLaunches()
+  const rockets = await getRockets()
   return {
     props: {
-      launches: launches.data,
-      rockets: rockets.data
+      launches,
+      rockets
     }
   }
 }
@@ -23,7 +22,8 @@ const Home = ({
   launches,
   rockets
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [launch, setLaunch] = useState(null)
+  const [launch, setLaunch] = useState<string | null>(null)
+  const [year, setYear] = useState(launches[0]?.year)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   return (
@@ -32,6 +32,7 @@ const Home = ({
         <LargeTimeline
           launches={launches}
           launch={launch}
+          year={year}
           clear={() => setLaunch(null)}
         />
         <SmallTimeline
@@ -39,6 +40,7 @@ const Home = ({
           rockets={rockets}
           scrollRef={scrollRef}
           setLaunch={setLaunch}
+          setYear={setYear}
         />
       </Grid>
     </Layout>

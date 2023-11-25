@@ -1,55 +1,61 @@
-import { getAllDaysInYear, monthNumberToShorthand } from "@/utils/date"
+import { Launch, Rocket } from "@/data/api/v4"
+import { getAllMonthsInYear } from "@/utils/date"
 import { getRocketImage } from "@/utils/image"
 import Image from "next/image"
-import React, { useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
+import { useInView } from "react-intersection-observer"
 import styled from "styled-components"
 
-const SmallTimeline = ({ launches, rockets, scrollRef, setLaunch }: any) => {
-  const [size, setSize] = useState(1)
-  const initialYear =
-    launches.length > 0 ? launches[0].date_utc.slice(0, 4) : ""
+interface Props {
+  launches: Launch[]
+  rockets: Rocket[]
+  scrollRef: React.RefObject<HTMLDivElement>
+  setLaunch: (id: string) => void
+  setYear: (year: number) => void
+}
 
-  const { start, end } = launches.reduce(
-    (uniqueYears: { start: string; end: string }, d: { date_utc: string }) => {
-      const year = d.date_utc.slice(0, 4)
-      if (uniqueYears.start === "" || uniqueYears.start > year) {
-        uniqueYears.start = year
-      }
-      if (uniqueYears.end === "" || uniqueYears.end < year) {
-        uniqueYears.end = year
-      }
-      return uniqueYears
-    },
-    { start: initialYear, end: initialYear }
-  )
+const SmallTimeline = ({
+  launches,
+  rockets,
+  scrollRef,
+  setLaunch,
+  setYear
+}: Props) => {
+  const [size, setSize] = useState(1)
+
+  const { start, end } = {
+    start: launches[0]?.year,
+    end: launches?.at(-1)?.year ?? launches[0]?.year
+  }
 
   return (
     <Wrapper>
       <div>
         <button
           onClick={() => {
-            scrollRef.current.scrollLeft = 0
+            if (scrollRef.current) scrollRef.current.scrollLeft = 0
           }}
         >
           {"<<"}
         </button>
         <button
           onClick={() => {
-            scrollRef.current.scrollLeft -= 250
+            if (scrollRef.current) scrollRef.current.scrollLeft -= 250
           }}
         >
           {"<"}
         </button>
         <button
           onClick={() => {
-            scrollRef.current.scrollLeft += 250
+            if (scrollRef.current) scrollRef.current.scrollLeft += 250
           }}
         >
           {">"}
         </button>
         <button
           onClick={() => {
-            scrollRef.current.scrollLeft = scrollRef.current.scrollWidth
+            if (scrollRef.current)
+              scrollRef.current.scrollLeft = scrollRef.current.scrollWidth
           }}
         >
           {">>"}
@@ -70,75 +76,105 @@ const SmallTimeline = ({ launches, rockets, scrollRef, setLaunch }: any) => {
         </button>
       </div>
       <TimelineWrapper ref={scrollRef}>
-        {Array.from({ length: end - start + 1 }, (_, yearIndex) => {
-          const year = parseInt(start) + yearIndex
-          const { daysInYear, monthDays } = getAllDaysInYear(year)
-          return (
-            <Year key={yearIndex} id={`${year}`}>
-              <div>
-                <h2>{year}</h2>
-              </div>
-              {daysInYear.map(({ date }, dayIndex) => {
-                const launchesThisDay = launches.filter(
-                  (d: { date_utc: string }) =>
-                    d.date_utc.slice(0, 10) === date.toISOString().slice(0, 10)
-                )
-                const rocket = rockets.find(
-                  (r: any) => r.id === launchesThisDay[0]?.rocket
-                )
-                return (
-                  <Day
-                    key={dayIndex}
-                    week={date.getDay() === 1 ? dayIndex + 1 : undefined}
-                    year={year}
-                    size={size}
-                    id={
-                      monthDays[dayIndex + 1]
-                        ? `${year}${monthNumberToShorthand(
-                            monthDays[dayIndex + 1]
-                          )}`
-                        : `${year}day${dayIndex + 1}`
-                    }
-                  >
-                    {monthDays[dayIndex + 1] && (
-                      <h3>{monthNumberToShorthand(monthDays[dayIndex + 1])}</h3>
-                    )}
-                    {launchesThisDay.length > 0 && (
-                      <RocketWrapper
-                        onClick={() => setLaunch(launchesThisDay[0].id)}
-                      >
-                        <Rocket key={launchesThisDay[0]?.id}>
-                          <Image
-                            src={getRocketImage(rocket.name)}
-                            alt="rocket"
-                            fill={true}
-                          />
-                          <Image src={"/smoke.png"} alt="smoke" fill={true} />
-                          {rocket.name === "Falcon Heavy" && (
-                            <>
-                              <Image
-                                src={"/smoke.png"}
-                                alt="smoke"
-                                fill={true}
-                              />
-                              <Image
-                                src={"/smoke.png"}
-                                alt="smoke"
-                                fill={true}
-                              />
-                            </>
-                          )}
-                        </Rocket>
-                      </RocketWrapper>
-                    )}
-                  </Day>
-                )
-              })}
-            </Year>
-          )
-        })}
+        {Array.from({ length: end - start + 1 }, (_, yearIndex) => (
+          <Year
+            key={yearIndex}
+            year={start + yearIndex}
+            launches={launches}
+            rockets={rockets}
+            size={size}
+            setLaunch={setLaunch}
+            setYear={setYear}
+            scrollRef={scrollRef}
+          />
+        ))}
       </TimelineWrapper>
     </Wrapper>
+  )
+}
+
+const Year = ({
+  year,
+  launches,
+  rockets,
+  size,
+  scrollRef,
+  setLaunch,
+  setYear
+}: {
+  year: number
+  launches: Launch[]
+  rockets: Rocket[]
+  size: number
+  scrollRef: React.RefObject<HTMLDivElement>
+  setLaunch: (id: string) => void
+  setYear: (year: number) => void
+}) => {
+  const monthsInYear = getAllMonthsInYear(year)
+  const { ref } = useInView({
+    root: scrollRef.current,
+    threshold: 0.25,
+    onChange: (inView) => inView && setYear(year)
+  })
+
+  return (
+    <YearWrapper id={`${year}`} ref={ref}>
+      <YearLabel>
+        <h2>{year}</h2>
+      </YearLabel>
+      {monthsInYear.map(({ date, name, days }, monthIndex) => {
+        const launchesThisMonth = launches.filter(
+          (d) => d.date_utc.slice(0, 7) === date.toISOString().slice(0, 7)
+        )
+
+        return (
+          <Month
+            key={monthIndex}
+            month={monthIndex}
+            days={days}
+            year={year}
+            size={size}
+            id={`${year}${name}`}
+          >
+            <h3>{name}</h3>
+            {launchesThisMonth.length > 0 &&
+              launchesThisMonth.map((launch) => {
+                const rocket = rockets.find((r) => r.id === launch.rocket)
+                if (!rocket) throw new Error("Rocket not found")
+
+                return (
+                  <RocketWrapper
+                    key={launch.id}
+                    relativeDay={Math.max(
+                      3,
+                      Math.min(
+                        97,
+                        (new Date(launch.date_utc).getDate() / days) * 100
+                      )
+                    )}
+                    onClick={() => setLaunch(launch.id)}
+                  >
+                    <RocketSvg key={launch.id}>
+                      <Image
+                        src={getRocketImage(rocket.name)}
+                        alt="rocket"
+                        fill={true}
+                      />
+                      <Image src={"/smoke.png"} alt="smoke" fill={true} />
+                      {rocket.name === "Falcon Heavy" && (
+                        <>
+                          <Image src={"/smoke.png"} alt="smoke" fill={true} />
+                          <Image src={"/smoke.png"} alt="smoke" fill={true} />
+                        </>
+                      )}
+                    </RocketSvg>
+                  </RocketWrapper>
+                )
+              })}
+          </Month>
+        )
+      })}
+    </YearWrapper>
   )
 }
 
@@ -171,6 +207,24 @@ const Wrapper = styled.section`
   }
 `
 
+const YearLabel = styled.div`
+  z-index: 5;
+  position: sticky;
+  left: 0;
+  bottom: 0;
+
+  h2 {
+    position: absolute;
+    color: #ffffff7c;
+    text-transform: capitalize;
+    left: 0;
+    bottom: 0;
+    font-size: 2rem;
+    background-color: #11111150;
+    padding: 0.2rem 0.6rem;
+  }
+`
+
 const TimelineWrapper = styled.section`
   display: flex;
   background-color: #333;
@@ -180,42 +234,26 @@ const TimelineWrapper = styled.section`
   overflow-x: hidden;
 `
 
-const Year = styled.section`
+const YearWrapper = styled.section`
   display: flex;
   position: relative;
   z-index: 5;
-
-  > div {
-    z-index: 5;
-    position: sticky;
-    left: 0;
-    bottom: 0;
-
-    h2 {
-      position: absolute;
-      color: #ffffff7c;
-      text-transform: capitalize;
-      left: 0;
-      bottom: 0;
-      font-size: 2rem;
-      background-color: #11111150;
-      padding: 0.2rem 0.6rem;
-    }
-  }
 `
 
-const Day = styled.section<{ week?: number; year: number; size: number }>`
+const Month = styled.div<{
+  days: number
+  month?: number
+  year: number
+  size: number
+}>`
   display: flex;
-  transition: padding 0.3s;
-  padding: 2rem calc(0.15rem * ${({ size }) => size});
+  transition: width 0.3s;
+  padding: 2rem 0;
+  width: calc(
+    0.3rem * ${({ size }) => size ?? `1`} * ${({ days }) => days ?? `30`}
+  );
   position: relative;
   background-color: ${({ year }) => (year % 2 === 1 ? `#222` : `#333`)};
-
-  ${({ week, year }) =>
-    week &&
-    `
-    border-left: 1px solid ${year % 2 === 1 ? `#333` : `#444`};
-  `}
   h3 {
     position: absolute;
     color: #ffffff7c;
@@ -226,9 +264,15 @@ const Day = styled.section<{ week?: number; year: number; size: number }>`
     background-color: #11111150;
     padding: 0.2rem 0.6rem;
   }
+
+  ${({ month, year }) =>
+    month &&
+    `
+    border-left: 1px solid ${year % 2 === 1 ? `#333` : `#444`};
+  `}
 `
 
-const Rocket = styled.div`
+const RocketSvg = styled.div`
   height: 70%;
   translate: 0 30%;
   transition: translate 1s ease-in-out;
@@ -244,7 +288,7 @@ const Rocket = styled.div`
 
   img:nth-child(2) {
     transform: scaleX(-1);
-    translate: -4px 90%;
+    translate: -5px 90%;
   }
   img:nth-child(3) {
     translate: -4px 90%;
@@ -254,16 +298,16 @@ const Rocket = styled.div`
   }
 `
 
-const RocketWrapper = styled.div`
+const RocketWrapper = styled.div<{ relativeDay: number }>`
   cursor: pointer;
   position: absolute;
   height: 100%;
   width: 2.2rem;
   z-index: 3;
   top: 0;
-  left: 50%;
+  left: ${({ relativeDay }) => relativeDay}%;
   transform: translate(-50%, 0);
-  &:hover ${Rocket} {
+  &:hover ${RocketSvg} {
     translate: 0 -40%;
     img:not(:first-child) {
       opacity: 1;

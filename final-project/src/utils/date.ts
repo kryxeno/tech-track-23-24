@@ -17,7 +17,33 @@ export const getAllDaysInYear = (year: number) => {
   return { daysInYear, monthDays }
 }
 
-export const monthNumberToShorthand = (monthNumber: number) => {
+export const getAllMonthsInYear = (year: number) => {
+  const monthsInYear: {
+    date: Date
+    name: string
+    days: number
+  }[] = []
+
+  for (let month = 0; month < 12; month++) {
+    monthsInYear[month] = {
+      date: new Date(year, month, 1),
+      name: monthNumberToShorthand(month + 1),
+      days: getDaysInMonth(new Date(year, month, 1))
+    }
+  }
+
+  return monthsInYear
+}
+
+const getDaysInMonth = (date: Date) => {
+  // Month value in JavaScript Date object starts from 0 (January) to 11 (December)
+  // So, if you input the month value as 1, it will refer to February.
+  const year = date.getFullYear()
+  const month = date.getMonth()
+  return new Date(year, month + 1, 0).getDate()
+}
+
+const monthNumberToShorthand = (monthNumber: number) => {
   switch (monthNumber) {
     case 1:
       return "jan"
