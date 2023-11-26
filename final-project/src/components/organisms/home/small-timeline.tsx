@@ -1,8 +1,16 @@
 import { Launch, Rocket } from "@/data/api/v4"
 import { getAllMonthsInYear } from "@/utils/date"
 import { getRocketImage } from "@/utils/image"
+import {
+  AddCircle,
+  ChapterNext,
+  ChapterPrevious,
+  FastForward,
+  Rewind,
+  SubtractCircle
+} from "grommet-icons"
 import Image from "next/image"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { useInView } from "react-intersection-observer"
 import styled from "styled-components"
 
@@ -10,14 +18,15 @@ interface Props {
   launches: Launch[]
   rockets: Rocket[]
   scrollRef: React.RefObject<HTMLDivElement>
+  selectedLaunch: string | null
   setLaunch: (id: string) => void
   setYear: (year: number) => void
 }
-
 const SmallTimeline = ({
   launches,
   rockets,
   scrollRef,
+  selectedLaunch,
   setLaunch,
   setYear
 }: Props) => {
@@ -30,27 +39,27 @@ const SmallTimeline = ({
 
   return (
     <Wrapper>
-      <div>
+      <SideMenu>
         <button
           onClick={() => {
             if (scrollRef.current) scrollRef.current.scrollLeft = 0
           }}
         >
-          {"<<"}
+          <ChapterPrevious color="#fff" />
         </button>
         <button
           onClick={() => {
-            if (scrollRef.current) scrollRef.current.scrollLeft -= 250
+            if (scrollRef.current) scrollRef.current.scrollLeft -= 800
           }}
         >
-          {"<"}
+          <Rewind color="#fff" />
         </button>
         <button
           onClick={() => {
-            if (scrollRef.current) scrollRef.current.scrollLeft += 250
+            if (scrollRef.current) scrollRef.current.scrollLeft += 800
           }}
         >
-          {">"}
+          <FastForward color="#fff" />
         </button>
         <button
           onClick={() => {
@@ -58,13 +67,12 @@ const SmallTimeline = ({
               scrollRef.current.scrollLeft = scrollRef.current.scrollWidth
           }}
         >
-          {">>"}
+          <ChapterNext color="#fff" />
         </button>
-        <p>
-          Zoom: <br />
-          {size}
-        </p>
-        <button onClick={() => setSize((prevSize) => prevSize + 0.5)}>+</button>
+        <button onClick={() => setSize((prevSize) => prevSize + 0.5)}>
+          <AddCircle color="#fff" />
+        </button>
+        <p>{1 + (size - 1) * 2}</p>
         <button
           onClick={() =>
             setSize((prevSize) =>
@@ -72,9 +80,9 @@ const SmallTimeline = ({
             )
           }
         >
-          -
+          <SubtractCircle color="#fff" />
         </button>
-      </div>
+      </SideMenu>
       <TimelineWrapper ref={scrollRef}>
         {Array.from({ length: end - start + 1 }, (_, yearIndex) => (
           <Year
@@ -83,6 +91,7 @@ const SmallTimeline = ({
             launches={launches}
             rockets={rockets}
             size={size}
+            selectedLaunch={selectedLaunch}
             setLaunch={setLaunch}
             setYear={setYear}
             scrollRef={scrollRef}
@@ -99,6 +108,7 @@ const Year = ({
   rockets,
   size,
   scrollRef,
+  selectedLaunch,
   setLaunch,
   setYear
 }: {
@@ -107,6 +117,7 @@ const Year = ({
   rockets: Rocket[]
   size: number
   scrollRef: React.RefObject<HTMLDivElement>
+  selectedLaunch: string | null
   setLaunch: (id: string) => void
   setYear: (year: number) => void
 }) => {
@@ -140,11 +151,15 @@ const Year = ({
             {launchesThisMonth.length > 0 &&
               launchesThisMonth.map((launch) => {
                 const rocket = rockets.find((r) => r.id === launch.rocket)
-                if (!rocket) throw new Error("Rocket not found")
+                if (!rocket) {
+                  console.error(`Rocket ${launch.rocket} not found`)
+                  return null
+                }
 
                 return (
                   <RocketWrapper
                     key={launch.id}
+                    isSelected={selectedLaunch === launch.id}
                     relativeDay={Math.max(
                       3,
                       Math.min(
@@ -182,29 +197,6 @@ const Wrapper = styled.section`
   display: flex;
   width: 100%;
   overflow: hidden;
-  > div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-right: 2px solid var(--color-primary);
-    p {
-      background-color: var(--color-primary);
-      width: 100%;
-      text-align: center;
-    }
-    button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #333;
-      color: #fff;
-      height: 100%;
-      width: 4rem;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-  }
 `
 
 const YearLabel = styled.div`
@@ -222,6 +214,42 @@ const YearLabel = styled.div`
     font-size: 2rem;
     background-color: #11111150;
     padding: 0.2rem 0.6rem;
+  }
+`
+
+const SideMenu = styled.aside`
+  display: grid;
+  grid-template-rows: repeat(7, 1fr);
+  grid-template-columns: 1fr;
+  justify-content: center;
+  width: 4rem;
+  background-color: var(--color-background-dark);
+  align-items: center;
+  border-right: 2px solid var(--color-primary);
+  border-left: 2px solid var(--color-primary);
+  p {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #fff;
+    text-align: center;
+  }
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color 0.3s;
+    svg {
+      scale: 0.8;
+    }
+    &:hover {
+      background-color: var(--color-primary-dark);
+    }
   }
 `
 
@@ -264,7 +292,6 @@ const Month = styled.div<{
     background-color: #11111150;
     padding: 0.2rem 0.6rem;
   }
-
   ${({ month, year }) =>
     month &&
     `
@@ -298,7 +325,10 @@ const RocketSvg = styled.div`
   }
 `
 
-const RocketWrapper = styled.div<{ relativeDay: number }>`
+const RocketWrapper = styled.div<{
+  relativeDay: number
+  isSelected: boolean
+}>`
   cursor: pointer;
   position: absolute;
   height: 100%;
@@ -313,6 +343,17 @@ const RocketWrapper = styled.div<{ relativeDay: number }>`
       opacity: 1;
     }
   }
+  ${({ isSelected }) =>
+    isSelected &&
+    `
+    ${RocketSvg} {
+      translate: 0 -40%;
+      img:not(:first-child) {
+        opacity: 1;
+      }
+    }
+  `}
+
   overflow: hidden;
 `
 

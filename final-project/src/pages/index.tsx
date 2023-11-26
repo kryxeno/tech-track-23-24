@@ -1,4 +1,4 @@
-import LargeTimeline from "@/components/organisms/home/large-timeline"
+import LaunchDetail from "@/components/organisms/home/large-timeline"
 import SmallTimeline from "@/components/organisms/home/small-timeline"
 import Layout from "@/components/organisms/layout/layout"
 import { onWheel } from "@/utils/mouse"
@@ -29,13 +29,14 @@ const Home = ({
   return (
     <Layout title="Home" padding="0">
       <Grid onWheel={(e) => onWheel(e as unknown as WheelEvent, scrollRef)}>
-        <LargeTimeline
+        <LaunchDetail
           launches={launches}
           launch={launch}
           year={year}
           clear={() => setLaunch(null)}
         />
         <SmallTimeline
+          selectedLaunch={launch}
           launches={launches}
           rockets={rockets}
           scrollRef={scrollRef}

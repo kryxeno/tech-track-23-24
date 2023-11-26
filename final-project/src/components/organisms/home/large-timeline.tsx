@@ -2,7 +2,7 @@ import { Launch } from "@/data/api/v4"
 import { Close } from "grommet-icons"
 import styled from "styled-components"
 
-const LargeTimeline = ({
+const LaunchDetail = ({
   launch,
   launches,
   year,
@@ -70,4 +70,4 @@ const Info = styled.p`
   line-height: 1.8;
 `
 
-export default LargeTimeline
+export default LaunchDetail
