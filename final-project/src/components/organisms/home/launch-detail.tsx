@@ -8,22 +8,20 @@ const LaunchDetail = ({
   launch,
   launches,
   rockets,
-  year,
   clear
 }: {
   launch: string
   launches: Launch[]
   rockets: Rocket[]
-  year: number
   clear: () => void
 }) => {
   const currentLaunch = launches.find((l) => l.id === launch)
   const currentRocket = rockets.find((l) => l.id === currentLaunch!.rocket)
-  if (!currentRocket) return null
+  if (!currentRocket || !currentLaunch) return null
 
   const bgImage =
     currentRocket.images[
-      hashToIndex(currentLaunch!.id, currentRocket.images.length)
+      hashToIndex(currentLaunch.id, currentRocket.images.length)
     ]
 
   return (
@@ -35,38 +33,32 @@ const LaunchDetail = ({
         style={{ zIndex: "-1", objectFit: "cover" }}
       />
       <Header>
-        <h1>{currentLaunch?.name ?? "No launch selected"}</h1>
-        <h2>{year}</h2>
+        <h1>{currentLaunch.name ?? "No launch selected"}</h1>
+        <h2>{currentLaunch.year}</h2>
         <ButtonWrapper onClick={clear}>
           <Close color="#000" />
         </ButtonWrapper>
       </Header>
-      {currentLaunch && (
-        <>
-          <Info>{currentLaunch.details ?? <i>No details available</i>}</Info>
-          <Info>
-            <b>Rocket:</b> {currentRocket.name}
-          </Info>
-          <Info>
-            <b>Mission status:</b>{" "}
-            {currentLaunch.success ? "Success" : "Failure"}
-          </Info>
-          <Info>
-            <b>Date:</b> {new Date(currentLaunch.date_utc).toUTCString()}
-          </Info>
-          <Info>
-            <b>Flight number:</b> {currentLaunch.flight_number}
-          </Info>
-          {currentLaunch.cores.map((c, index) => (
-            <Info key={index}>
-              <b>
-                Landing {index === 0 ? "central" : `outer (${index})`} core:
-              </b>{" "}
-              {c.landing_success ? "Success" : "Failure"}
-            </Info>
-          ))}
-        </>
-      )}
+
+      <Info>{currentLaunch.details ?? <i>No details available</i>}</Info>
+      <Info>
+        <b>Rocket:</b> {currentRocket.name}
+      </Info>
+      <Info>
+        <b>Mission status:</b> {currentLaunch.success ? "Success" : "Failure"}
+      </Info>
+      <Info>
+        <b>Date:</b> {new Date(currentLaunch.date_utc).toUTCString()}
+      </Info>
+      <Info>
+        <b>Flight number:</b> {currentLaunch.flight_number}
+      </Info>
+      {currentLaunch.cores.map((c, index) => (
+        <Info key={index}>
+          <b>Landing {index === 0 ? "central" : `outer (${index})`} core:</b>{" "}
+          {c.landing_success ? "Success" : "Failure"}
+        </Info>
+      ))}
     </Wrapper>
   )
 }
