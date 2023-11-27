@@ -5,11 +5,15 @@ export interface Launch {
   id: string
   name: string
   details: string
-  launchpad: string
   payloads: string[]
   rocket: string
   success: boolean
-  cores: string[]
+  cores: {
+    flight: number
+    legs: boolean
+    reused: boolean
+    landing_success: boolean
+  }[]
   crew: string[]
   year: number
   date_utc: string
@@ -34,11 +38,17 @@ export const getLaunches = async (): Promise<Launch[]> => {
         id: launch.id,
         name: launch.name,
         details: launch.details,
-        launchpad: launch.launchpad,
         payloads: launch.payloads,
         rocket: launch.rocket,
         success: launch.success,
-        cores: launch.cores,
+        cores: launch.cores?.map((core: any) => {
+          return {
+            flight: core.flight,
+            legs: core.legs,
+            reused: core.reused,
+            landing_success: core.landing_success
+          }
+        }, []),
         crew: launch.crew,
         year: parseInt(launch.date_utc.slice(0, 4)),
         date_utc: launch.date_utc
