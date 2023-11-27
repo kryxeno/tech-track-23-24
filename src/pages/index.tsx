@@ -35,7 +35,6 @@ const Home = ({
             launches={launches}
             launch={launch}
             rockets={rockets}
-            year={year}
             clear={() => setLaunch(null)}
           />
         ) : (
