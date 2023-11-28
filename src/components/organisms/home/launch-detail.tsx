@@ -1,4 +1,5 @@
 import Label from "@/components/molecules/label"
+import Core from "@/components/svg/core"
 import { Launch, Rocket } from "@/data/api/v4"
 import { hashToIndex } from "@/utils/random"
 import { numberWithOrdinal } from "@/utils/text"
@@ -52,6 +53,13 @@ const LaunchDetail = ({
           <p>
             <ExampleBox> #</ExampleBox>= flights old
           </p>
+          <Cores>
+            {currentLaunch.cores.map((core, index) => (
+              <CoreWrapper key={index}>
+                <Core success={core.landing_success} flights={core.flight} />
+              </CoreWrapper>
+            ))}
+          </Cores>
         </Content>
         <Content>
           <h2>Launch details</h2>
@@ -113,9 +121,8 @@ export const Wrapper = styled.section`
     rgb(255, 255, 255) 30%,
     rgba(255, 255, 255, 0.3) 100%
   );
-  background-size: cover;
-  background-position: center;
   position: relative;
+  overflow: hidden;
 `
 
 export const Header = styled.header<{ $success?: boolean }>`
@@ -136,8 +143,9 @@ export const Header = styled.header<{ $success?: boolean }>`
 
 const ContentWrapper = styled.section`
   display: grid;
-  grid-template-columns: 20rem 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: 17rem 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 3rem;
 `
 
 const Content = styled.section`
@@ -182,6 +190,24 @@ const ExampleBox = styled.span`
   border-radius: var(--border-radius-s);
   margin-right: 0.5rem;
   color: #fff;
+`
+
+const Cores = styled.div`
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+  gap: 2.5rem;
+`
+
+const CoreWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
 `
 
 export default LaunchDetail
