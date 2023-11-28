@@ -23,7 +23,7 @@ const Home = ({
   launches,
   rockets
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const [launch, setLaunch] = useState<string | null>(null)
+  const [launch, setLaunch] = useState<string | null>(launches[54]?.id)
   const [year, setYear] = useState(launches[0]?.year)
   const scrollRef = useRef<HTMLDivElement>(null)
 

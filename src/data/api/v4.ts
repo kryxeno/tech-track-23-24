@@ -5,7 +5,14 @@ export interface Launch {
   id: string
   name: string
   details: string
-  payloads: string[]
+  payloads:
+    | {
+        id: string
+        type: string
+        customers: string[]
+        nationalities: string[]
+      }[]
+    | null
   rocket: string
   success: boolean
   cores: {
@@ -31,30 +38,42 @@ export interface Rocket {
 }
 
 export const getLaunches = async (): Promise<Launch[]> => {
-  return (await axios.get("https://api.spacexdata.com/v4/launches")).data.map(
-    (launch: any) => {
-      return {
-        flight_number: launch.flight_number,
-        id: launch.id,
-        name: launch.name,
-        details: launch.details,
-        payloads: launch.payloads,
-        rocket: launch.rocket,
-        success: launch.success,
-        cores: launch.cores?.map((core: any) => {
-          return {
-            flight: core.flight,
-            legs: core.legs,
-            reused: core.reused,
-            landing_success: core.landing_success
-          }
-        }, []),
-        crew: launch.crew,
-        year: parseInt(launch.date_utc.slice(0, 4)),
-        date_utc: launch.date_utc
+  return (
+    await axios.post("https://api.spacexdata.com/v5/launches/query", {
+      options: {
+        pagination: false,
+        populate: ["payloads"]
       }
+    })
+  ).data.docs.map((launch: any) => {
+    return {
+      flight_number: launch.flight_number,
+      id: launch.id,
+      name: launch.name,
+      details: launch.details,
+      payloads: launch.payloads?.map((payload: any) => {
+        return {
+          id: payload.id,
+          type: payload.type,
+          customers: payload.customers,
+          nationalities: payload.nationalities
+        }
+      }, []),
+      rocket: launch.rocket,
+      success: launch.success,
+      cores: launch.cores?.map((core: any) => {
+        return {
+          flight: core.flight,
+          legs: core.legs,
+          reused: core.reused,
+          landing_success: core.landing_success
+        }
+      }, []),
+      crew: launch.crew,
+      year: parseInt(launch.date_utc.slice(0, 4)),
+      date_utc: launch.date_utc
     }
-  )
+  })
 }
 
 export const getRockets = async (): Promise<Rocket[]> => {
