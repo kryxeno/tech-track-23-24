@@ -185,7 +185,7 @@ const LaunchDetail = ({
   )
 }
 
-export const Wrapper = styled.section<{ success: boolean }>`
+export const Wrapper = styled.section<{ success?: boolean }>`
   display: flex;
   flex-direction: column;
   padding: 3rem 5rem;
@@ -194,7 +194,11 @@ export const Wrapper = styled.section<{ success: boolean }>`
     90deg,
     rgb(255, 255, 255) 30%,
     ${({ success }) =>
-        success ? `rgba(186, 233, 168, 0.6)` : `rgba(235, 183, 183, 0.6)`}
+        success === undefined
+          ? `rgb(255, 255, 255, 0.6)`
+          : success
+          ? `rgba(186, 233, 168, 0.6)`
+          : `rgba(235, 183, 183, 0.6)`}
       100%
   );
   position: relative;
