@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { Header, Wrapper } from "./launch-detail"
 import yearMapping from "@/mappings/year-mapping"
 import Image from "next/image"
+import Label from "@/components/molecules/label"
 
 const YearOverview = ({ year }: { year: number }) => {
   const { title, story, image, src } = yearMapping[year] ?? {
@@ -23,13 +24,10 @@ const YearOverview = ({ year }: { year: number }) => {
       </YearHeader>
       <Description>
         {story}
-        <p style={{ fontSize: "0.9rem" }}>
+        <p style={{ fontSize: "0.9rem", marginBottom: "2rem" }}>
           <em>- {src ?? "Wikipedia (History of SpaceX)"}</em>
         </p>
-        <p>
-          This website is a timeline of all SpaceX launches.{" "}
-          <em> Click on a launch to see more information.</em>
-        </p>
+        <Label question text="Click on a launch to see more information." />
       </Description>
     </Wrapper>
   )
