@@ -29,9 +29,9 @@ const Core = ({
           gradientTransform="translate(26.71 -1305.89)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stop-color="#101010" />
-          <stop offset=".5" stop-color="#282828" />
-          <stop offset="1" stop-color="#101010" />
+          <stop offset="0" stopColor="#101010" />
+          <stop offset=".5" stopColor="#282828" />
+          <stop offset="1" stopColor="#101010" />
         </linearGradient>
         <linearGradient
           id="linear-gradient-2"
@@ -50,8 +50,8 @@ const Core = ({
           gradientTransform="translate(26.71 -1305.89)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stop-color="#181818" />
-          <stop offset="1" stop-color="#3c3c3c" />
+          <stop offset="0" stopColor="#181818" />
+          <stop offset="1" stopColor="#3c3c3c" />
         </linearGradient>
         <linearGradient
           id="linear-gradient-4"
@@ -62,8 +62,8 @@ const Core = ({
           gradientTransform="translate(26.71 -1305.89)"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0" stop-color="#080808" />
-          <stop offset="1" stop-color="#141414" />
+          <stop offset="0" stopColor="#080808" />
+          <stop offset="1" stopColor="#141414" />
         </linearGradient>
         <linearGradient
           id="linear-gradient-5"
@@ -467,7 +467,7 @@ const Core = ({
             <path
               d="m3.02,351.34l1.14-10.38.28-3.26,1.01-7.64.15-1.06.55-.88.69-.63.69-.31.73-.08.5.08.45.33,8.41,23.34.5.45.56.1-.03-.38-12.71-34.16-.63-.69-.68-.45-.69.18-.28.86-2.66,32.9.64.83.64.59.73.26.02-.02Z"
               fill="url(#linear-gradient-4)"
-              fill-rule="evenodd"
+              fillRule="evenodd"
               strokeWidth="0"
             />
             <path
@@ -504,7 +504,7 @@ const Core = ({
               d="m8.21,270.98l.3-5.49"
               fill="none"
               stroke="#000"
-              stroke-linecap="round"
+              strokeLinecap="round"
               strokeWidth=".66"
             />
             <path
@@ -547,7 +547,7 @@ const Core = ({
             <path
               d="m36.28,351.34l-1.14-10.38-.28-3.26-1.01-7.64-.15-1.06-.55-.88-.69-.63-.69-.31-.73-.08-.5.08-.45.33-8.41,23.34-.5.45-.56.1.03-.38,12.71-34.16.63-.69.68-.45.69.18.28.86,2.66,32.9-.64.83-.64.59-.73.26-.02-.02Z"
               fill="url(#linear-gradient-6)"
-              fill-rule="evenodd"
+              fillRule="evenodd"
               strokeWidth="0"
             />
             <path
@@ -584,7 +584,7 @@ const Core = ({
               d="m31.09,270.98l-.3-5.49"
               fill="none"
               stroke="#000"
-              stroke-linecap="round"
+              strokeLinecap="round"
               strokeWidth=".66"
             />
             <path
@@ -623,9 +623,9 @@ const Core = ({
         <text
           transform="translate(19 19.94)"
           fill="#fff"
-          font-family="Poppins-Medium, Poppins"
-          font-size="16"
-          font-weight="500"
+          fontFamily="Poppins-Medium, Poppins"
+          fontSize="16"
+          fontWeight="500"
           textAnchor="middle"
         >
           <tspan x="0" y="0">
@@ -635,10 +635,10 @@ const Core = ({
         <text
           transform="translate(25.07 35.28) rotate(-90)"
           fill={colorDark}
-          font-family="Poppins-SemiBold, Poppins"
-          font-size="16"
-          font-weight="600"
-          letter-spacing=".08em"
+          fontFamily="Poppins-SemiBold, Poppins"
+          fontSize="16"
+          fontWeight="600"
+          letterSpacing=".08em"
           textAnchor="end"
         >
           <tspan x="0" y="0">

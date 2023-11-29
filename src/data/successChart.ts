@@ -12,33 +12,27 @@ const createSuccessChart = (
   dimensions: { width: number; height: number }
 ) => {
   if (!launches) return
-  console.log("CREATE IS RUNNING")
 
   // Template from https://observablehq.com/@d3/area-chart
-  // Declare the chart dimensions and margins.
   const width = dimensions.width
   const height = dimensions.height
 
-  // Declare the x (horizontal position) scale.
   const x = d3.scaleUtc(
     d3.extent(launches, (d) => d.date) as Iterable<d3.NumberValue>,
     [marginLeft, width - marginRight]
   )
 
-  // Declare the y (vertical position) scale.
   const y = d3.scaleLinear(
-    [0, d3.max(launches, (d) => d.successPercentage) as d3.NumberValue],
+    [0, 100 as d3.NumberValue],
     [height - marginBottom, marginTop]
   )
 
-  // Declare the area generator.
   const area = d3
     .area()
     .x((d: any) => x(d.date))
     .y0(y(0))
     .y1((d: any) => y(d.successPercentage))
 
-  // Create the SVG container.
   const svg = d3
     .select(svgRef.current)
     .attr("width", width)
@@ -51,20 +45,20 @@ const createSuccessChart = (
   const lg = svg
     .append("defs")
     .append("linearGradient")
-    .attr("id", "gradient1") //id of the gradient
+    .attr("id", "gradient1")
     .attr("x1", "0%")
     .attr("x2", "0%")
     .attr("y1", "0%")
-    .attr("y2", "100%") //since its a vertical linear gradient
+    .attr("y2", "100%")
 
   lg.append("stop")
     .attr("offset", "10%")
-    .style("stop-color", "var(--color-success-dark") //start in blue
+    .style("stop-color", "var(--color-success-dark")
     .style("stop-opacity", 1)
 
   lg.append("stop")
     .attr("offset", "100%")
-    .style("stop-color", "var(--color-failure-dark") //end in red
+    .style("stop-color", "var(--color-failure-dark")
     .style("stop-opacity", 1)
 
   svg
@@ -72,7 +66,6 @@ const createSuccessChart = (
     .attr("fill", "url(#gradient1)")
     .attr("d", area(launches as any))
 
-  // Add the x-axis.
   svg
     .append("g")
     .attr("transform", `translate(0,${height - marginBottom})`)
@@ -83,7 +76,6 @@ const createSuccessChart = (
         .tickSizeOuter(0)
     )
 
-  // Add the y-axis, remove the domain line, add grid lines and a label.
   svg
     .append("g")
     .attr("transform", `translate(${marginLeft},0)`)
@@ -147,6 +139,7 @@ export const updateSuccessLine = (
         .attr("text-anchor", "middle")
         .attr("transform", `translate(0,10)`)
     )
+    .text((d) => d.successPercentage + "%")
     .transition()
     .duration(1000)
     .attr("x", (d) => x(d.date))

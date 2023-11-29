@@ -29,6 +29,7 @@ const LaunchDetail = ({
     currentRocket.images[
       hashToIndex(currentLaunch.id, currentRocket.images.length)
     ]
+  console.log(bgImage)
 
   const { rocketSuccess, launchSuccess, rocketFailures, totalFailures } =
     getConsecutiveStats(launches, currentLaunch)
@@ -36,7 +37,7 @@ const LaunchDetail = ({
   const successPercentage = getSuccessPercentage(launches, currentLaunch)
 
   return (
-    <Wrapper success={currentLaunch.success}>
+    <Wrapper $success={currentLaunch.success}>
       <Image
         src={bgImage}
         alt="Spacex rocket"
@@ -84,44 +85,39 @@ const LaunchDetail = ({
             ))}
           </Cores>
         </Content>
-        <Content bg>
+        <Content $bg>
           <h2>Launch details</h2>
           <h4>{currentRocket.name}</h4>
-          {currentLaunch.success ? (
+          {currentLaunch.success !== undefined && (
             <>
               <Label
                 text={
-                  <>
-                    <strong>{numberWithOrdinal(launchSuccess)}</strong>{" "}
-                    consecutive mission success
-                  </>
+                  currentLaunch.success ? (
+                    <>
+                      <strong>{numberWithOrdinal(launchSuccess)}</strong>{" "}
+                      consecutive mission success
+                    </>
+                  ) : (
+                    <>
+                      <strong>{numberWithOrdinal(totalFailures)}</strong>{" "}
+                      mission failure
+                    </>
+                  )
                 }
               />
               <Label
                 text={
-                  <>
-                    <strong>{numberWithOrdinal(rocketSuccess)}</strong>{" "}
-                    consecutive {currentRocket.name} success
-                  </>
-                }
-              />
-            </>
-          ) : (
-            <>
-              <Label
-                text={
-                  <>
-                    <strong>{numberWithOrdinal(totalFailures)}</strong> mission
-                    failure
-                  </>
-                }
-              />
-              <Label
-                text={
-                  <>
-                    <strong>{numberWithOrdinal(rocketFailures)}</strong>{" "}
-                    {currentRocket.name} failure
-                  </>
+                  currentLaunch.success ? (
+                    <>
+                      <strong>{numberWithOrdinal(rocketSuccess)}</strong>{" "}
+                      consecutive {currentRocket.name} success
+                    </>
+                  ) : (
+                    <>
+                      <strong>{numberWithOrdinal(rocketFailures)}</strong>{" "}
+                      {currentRocket.name} failure
+                    </>
+                  )
                 }
               />
             </>
@@ -132,13 +128,13 @@ const LaunchDetail = ({
           </p>
           <h4>Mission debrief</h4>
           <p id="contentbox" style={{ maxHeight: "21dvh" }}>
-            {currentLaunch.details ?? <i>No mission debrief available</i>}
+            {currentLaunch.details ?? <em>No mission debrief available.</em>}
           </p>
         </Content>
         <GridContent>
           <SubContent>
             <h2>Success percentile</h2>
-            <PayloadContent style={{ height: "79%" }}>
+            <PayloadContent>
               <SuccessChart
                 launches={launches}
                 currentLaunch={{
@@ -148,9 +144,9 @@ const LaunchDetail = ({
               />
             </PayloadContent>
           </SubContent>
-          {currentLaunch.payloads && currentLaunch.payloads[0] && (
-            <SubContent>
-              <h2>Payload</h2>
+          <SubContent>
+            <h2>Payload</h2>
+            {currentLaunch.payloads && currentLaunch.payloads[0] ? (
               <PayloadContent>
                 <LineChart
                   launches={launches}
@@ -177,15 +173,22 @@ const LaunchDetail = ({
                   </Question>
                 </QuestionWrapper>
               </PayloadContent>
-            </SubContent>
-          )}
+            ) : (
+              <p>
+                <em>
+                  This launch did not have a payload, or the payload information
+                  is not available.
+                </em>
+              </p>
+            )}
+          </SubContent>
         </GridContent>
       </ContentWrapper>
     </Wrapper>
   )
 }
 
-export const Wrapper = styled.section<{ success?: boolean }>`
+export const Wrapper = styled.section<{ $success?: boolean }>`
   display: flex;
   flex-direction: column;
   padding: 3rem 5rem;
@@ -193,10 +196,10 @@ export const Wrapper = styled.section<{ success?: boolean }>`
   background: linear-gradient(
     90deg,
     rgb(255, 255, 255) 30%,
-    ${({ success }) =>
-        success === undefined
+    ${({ $success }) =>
+        $success === undefined
           ? `rgb(255, 255, 255, 0.6)`
-          : success
+          : $success
           ? `rgba(186, 233, 168, 0.6)`
           : `rgba(235, 183, 183, 0.6)`}
       100%
@@ -216,6 +219,13 @@ export const Header = styled.header<{ $success?: boolean }>`
       $success ? `var(--color-success-dark)` : ` var(--color-failure-dark)`};
     color: ${({ $success }) =>
       $success ? `var(--color-success-light)` : ` var(--color-failure-light)`};
+
+    ${({ $success }) =>
+      $success === undefined &&
+      `
+      background-color: var(--color-primary);
+      color: var(--color-pastel);
+      `}
     padding: 0.5rem 1rem;
     border-radius: var(--border-radius-s);
   }
@@ -228,7 +238,7 @@ const ContentWrapper = styled.section`
   gap: 3rem;
 `
 
-const Content = styled.section<{ bg?: boolean }>`
+const Content = styled.section<{ $bg?: boolean }>`
   position: relative;
   isolation: isolate;
   display: flex;
@@ -236,8 +246,8 @@ const Content = styled.section<{ bg?: boolean }>`
   gap: 0.5rem;
   max-height: fit-content;
 
-  ${({ bg }) =>
-    bg &&
+  ${({ $bg }) =>
+    $bg &&
     `
     &::after {
       content: "";
@@ -320,8 +330,7 @@ const CoreWrapper = styled.div`
 
 const PayloadContent = styled.div`
   display: flex;
-  height: 80%;
-  margin-top: 0.5rem;
+  height: 79%;
 `
 
 const QuestionWrapper = styled.div`
@@ -331,6 +340,10 @@ const QuestionWrapper = styled.div`
   width: 15rem;
 `
 
-const SubContent = styled.section``
+const SubContent = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`
 
 export default LaunchDetail

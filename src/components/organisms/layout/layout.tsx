@@ -16,7 +16,7 @@ const Layout = ({
       <DynamicHeader title={title} />
       <Wrapper>
         <Navigation page={title} />
-        <Content id="contentbox" padding={padding}>
+        <Content id="contentbox" $padding={padding}>
           {children}
         </Content>
       </Wrapper>
@@ -29,8 +29,8 @@ const Wrapper = styled.main`
   grid-template-columns: auto 1fr;
 `
 
-const Content = styled.section<{ padding?: string }>`
-  padding: ${({ padding }) => padding ?? `3rem 5rem`};
+const Content = styled.section<{ $padding?: string }>`
+  padding: ${({ $padding }) => $padding ?? `3rem 5rem`};
   width: 100%;
   height: 100%;
 `
