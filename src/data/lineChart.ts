@@ -1,22 +1,23 @@
 import * as d3 from "d3"
 import { MutableRefObject } from "react"
 
+const marginTop = 20
+const marginRight = 30
+const marginBottom = 30
+const marginLeft = 50
+
 const createLineChart = (
   svgRef: MutableRefObject<SVGSVGElement | null>,
   launches: { date: Date; weight: number }[],
-  currentLaunch: { date: Date; weight: number },
   dimensions: { width: number; height: number }
 ) => {
   if (svgRef.current) svgRef.current.innerHTML = ""
   if (!launches) return
 
+  // Template from https://observablehq.com/@d3/area-chart
   // Declare the chart dimensions and margins.
   const width = dimensions.width
   const height = dimensions.height
-  const marginTop = 20
-  const marginRight = 30
-  const marginBottom = 30
-  const marginLeft = 50
 
   // Declare the x (horizontal position) scale.
   const x = d3.scaleUtc(
@@ -94,27 +95,60 @@ const createLineChart = (
         .attr("x2", width - marginLeft - marginRight)
         .attr("stroke-opacity", 0.1)
     )
+}
+
+export const updateWeightLine = (
+  svgRef: MutableRefObject<SVGSVGElement | null>,
+  launches: { date: Date; weight: number }[],
+  currentLaunch: { date: Date; weight: number },
+  dimensions: { width: number; height: number }
+) => {
+  const { width, height } = dimensions
+  const svg = d3.select(svgRef.current)
+
+  const x = d3.scaleUtc(
+    d3.extent(launches, (d) => d.date) as Iterable<d3.NumberValue>,
+    [marginLeft, width - marginRight]
+  )
 
   svg
-    .append("line")
-    .attr("y1", height - marginBottom - marginTop)
-    .attr("y2", 0)
-    .attr("stroke", "var(--color-primary-dark)")
-    .attr("stroke-width", 2)
-    .attr(
-      "transform",
-      `translate(${x(new Date(currentLaunch.date))}, ${marginTop})`
+    .selectAll(".toolline")
+    .data([currentLaunch])
+    .join((enter) =>
+      enter
+        .append("line")
+        .attr("class", "toolline")
+        .attr("opacity", 1)
+        .attr("x1", (d) => x(d.date))
+        .attr("x2", (d) => x(d.date))
+        .attr("y1", height - marginBottom - marginTop)
+        .attr("y2", 0)
+        .attr("stroke", "var(--color-primary-dark)")
+        .attr("stroke-width", 2)
+        .attr("transform", `translate(0, ${marginTop})`)
     )
+    .transition()
+    .duration(1000)
+    .attr("x1", (d) => x(d.date))
+    .attr("x2", (d) => x(d.date))
 
   svg
-    .append("text")
-    .attr("y1", height - marginBottom - marginTop)
-    .attr(
-      "transform",
-      `translate(${x(new Date(currentLaunch.date))}, ${marginTop - 10})`
+    .selectAll(".tooltip")
+    .data([currentLaunch])
+    .join((enter) =>
+      enter
+        .append("text")
+        .attr("class", "tooltip")
+        .text((d) => d.weight + " kg")
+        .attr("fill", "black")
+        .attr("x", (d) => x(d.date))
+        .attr("y1", height - marginBottom - marginTop)
+        .attr("text-anchor", "middle")
+        .attr("transform", `translate(0,10)`)
     )
-    .attr("text-anchor", "middle")
-    .text(currentLaunch.weight + " kg")
+    .transition()
+    .duration(1000)
+    .attr("x", (d) => x(d.date))
 }
 
 export default createLineChart

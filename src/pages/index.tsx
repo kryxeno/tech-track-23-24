@@ -38,7 +38,7 @@ const Home = ({
             clear={() => setLaunch(null)}
           />
         ) : (
-          <YearOverview launches={launches} rockets={rockets} year={year} />
+          <YearOverview year={year} />
         )}
 
         <SmallTimeline

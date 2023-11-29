@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import useResizeObserver from "../hooks/useResizeObserver"
-import createLineChart from "@/data/lineChart"
+import createLineChart, { updateWeightLine } from "@/data/lineChart"
 import { Launch } from "@/data/api/v4"
 
 const LineChart = ({
@@ -15,7 +15,7 @@ const LineChart = ({
   const svgRef = useRef(null)
 
   const { dimensions } = useResizeObserver(containerRef)
-  const parsedData = launches
+  const parsedLaunches = launches
     .filter(
       (l) =>
         l.payloads &&
@@ -32,8 +32,15 @@ const LineChart = ({
 
   useEffect(() => {
     if (!dimensions) return
-    createLineChart(svgRef, parsedData, currentLaunch, dimensions)
-  }, [parsedData, currentLaunch, dimensions])
+    createLineChart(svgRef, parsedLaunches, dimensions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dimensions])
+
+  useEffect(() => {
+    if (!svgRef || !dimensions) return
+    updateWeightLine(svgRef, parsedLaunches, currentLaunch, dimensions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dimensions, currentLaunch])
 
   return (
     <Wrapper ref={containerRef}>
