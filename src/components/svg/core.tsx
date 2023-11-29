@@ -621,26 +621,28 @@ const Core = ({
           </g>
         </g>
         <text
-          transform="translate(14.87 19.94)"
+          transform="translate(19 19.94)"
           fill="#fff"
           font-family="Poppins-Medium, Poppins"
           font-size="16"
           font-weight="500"
+          textAnchor="middle"
         >
           <tspan x="0" y="0">
             {flights ?? "#"}
           </tspan>
         </text>
         <text
-          transform="translate(25.07 116.28) rotate(-90)"
+          transform="translate(25.07 35.28) rotate(-90)"
           fill={colorDark}
           font-family="Poppins-SemiBold, Poppins"
           font-size="16"
           font-weight="600"
           letter-spacing=".08em"
+          textAnchor="end"
         >
           <tspan x="0" y="0">
-            {success ? "SUCCESS" : "FAILURE"}
+            {success ? "LANDED" : "LOST"}
           </tspan>
         </text>
       </g>

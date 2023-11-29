@@ -11,6 +11,7 @@ export interface Launch {
         type: string
         customers: string[]
         nationalities: string[]
+        mass: number
       }[]
     | null
   rocket: string
@@ -29,9 +30,6 @@ export interface Launch {
 export interface Rocket {
   id: string
   name: string
-  mass: {
-    kg: number
-  }
   cost_per_launch: number
   success_rate_pct: number
   images: string[]
@@ -56,7 +54,8 @@ export const getLaunches = async (): Promise<Launch[]> => {
           id: payload.id,
           type: payload.type,
           customers: payload.customers,
-          nationalities: payload.nationalities
+          nationalities: payload.nationalities,
+          mass: payload.mass_kg
         }
       }, []),
       rocket: launch.rocket,
@@ -82,7 +81,6 @@ export const getRockets = async (): Promise<Rocket[]> => {
       return {
         id: rocket.id,
         name: rocket.name,
-        mass: rocket.mass,
         cost_per_launch: rocket.cost_per_launch,
         success_rate_pct: rocket.success_rate_pct,
         images: rocket.flickr_images

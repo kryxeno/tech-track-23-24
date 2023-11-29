@@ -9,7 +9,11 @@ const Label = ({ text }: { text: React.ReactNode }) => {
 }
 
 const LabelWrapper = styled.div`
-  background: var(--color-primary);
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 100%
+  );
   padding: 0.5rem 1rem;
   border-radius: var(--border-radius-s);
   width: fit-content;

@@ -24,8 +24,6 @@ const Hw4 = ({ data }: { data: object[] }) => {
     }
   })
 
-  console.log({ adjustedLaunches })
-
   return (
     <ProjectWrapper>
       <h3>A bar chart made with launches per year </h3>

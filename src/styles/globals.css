@@ -165,6 +165,7 @@ hr {
 
 :root {
   --sidebar-width: 17rem;
+  --font-family: "Poppins", sans-serif;
 
   --color-border: #e2e8f0;
   --color-background-dark: #1b1a20;
