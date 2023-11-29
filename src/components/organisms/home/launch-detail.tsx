@@ -84,7 +84,7 @@ const LaunchDetail = ({
             ))}
           </Cores>
         </Content>
-        <Content>
+        <Content bg>
           <h2>Launch details</h2>
           <h4>{currentRocket.name}</h4>
           {currentLaunch.success ? (
@@ -138,7 +138,7 @@ const LaunchDetail = ({
         <GridContent>
           <SubContent>
             <h2>Success percentile</h2>
-            <PayloadContent>
+            <PayloadContent style={{ height: "79%" }}>
               <SuccessChart
                 launches={launches}
                 currentLaunch={{
@@ -228,7 +228,7 @@ const ContentWrapper = styled.section`
   gap: 3rem;
 `
 
-const Content = styled.section`
+const Content = styled.section<{ bg?: boolean }>`
   position: relative;
   isolation: isolate;
   display: flex;
@@ -236,23 +236,23 @@ const Content = styled.section`
   gap: 0.5rem;
   max-height: fit-content;
 
-  &::after {
-    content: "";
-    position: absolute;
-    height: 100%;
-    left: -1rem;
-    right: -1rem;
-    bottom: -1rem;
-    background: linear-gradient(rgba(0, 0, 0, 0) 0%, var(--color-primary) 100%);
-    border-radius: var(--border-radius-l);
-    transition: opacity 0.3s;
-    opacity: 0;
-    z-index: -1;
-  }
-
-  &:hover::after {
-    opacity: 0.3;
-  }
+  ${({ bg }) =>
+    bg &&
+    `
+    &::after {
+      content: "";
+      position: absolute;
+      height: 100%;
+      left: -1rem;
+      right: -1rem;
+      bottom: -1rem;
+      background: linear-gradient(rgba(0, 0, 0, 0) 0%, var(--color-primary) 100%);
+      border-radius: var(--border-radius-l);
+      transition: opacity 0.3s;
+      opacity: 0.3;
+      z-index: -1;
+    }
+  `}
 `
 
 const GridContent = styled(Content)`
@@ -300,11 +300,11 @@ const ExampleBox = styled.span`
 
 const Cores = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   height: 100%;
   width: 100%;
   margin-top: 1rem;
-  gap: 0.5rem;
+  gap: 2.5rem;
 `
 
 const CoreWrapper = styled.div`

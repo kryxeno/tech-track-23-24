@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import styled from "styled-components"
 import useResizeObserver from "../hooks/useResizeObserver"
 import { Launch } from "@/data/api/v4"
-import createSuccessChart from "@/data/successChart"
+import createSuccessChart, { updateSuccessLine } from "@/data/successChart"
 import { getSuccessPercentage } from "@/utils/launch"
 
 const SuccessChart = ({
@@ -16,7 +16,8 @@ const SuccessChart = ({
   const svgRef = useRef(null)
 
   const { dimensions } = useResizeObserver(containerRef)
-  const parsedData = launches
+
+  const parsedLaunches = launches
     .map((l) => {
       const success = getSuccessPercentage(launches, l)
       return {
@@ -28,8 +29,15 @@ const SuccessChart = ({
 
   useEffect(() => {
     if (!dimensions) return
-    createSuccessChart(svgRef, parsedData, currentLaunch, dimensions)
-  }, [parsedData, currentLaunch, dimensions])
+    createSuccessChart(svgRef, parsedLaunches, dimensions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dimensions])
+
+  useEffect(() => {
+    if (!svgRef || !dimensions) return
+    updateSuccessLine(svgRef, parsedLaunches, currentLaunch, dimensions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dimensions, currentLaunch])
 
   return (
     <Wrapper ref={containerRef}>

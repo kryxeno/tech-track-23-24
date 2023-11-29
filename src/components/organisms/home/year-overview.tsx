@@ -1,19 +1,9 @@
 import { Launch, Rocket } from "@/data/api/v4"
 import { hashToIndex } from "@/utils/random"
-import { Close } from "grommet-icons"
-import Image from "next/image"
 import styled from "styled-components"
 import { Header, Wrapper } from "./launch-detail"
 
-const YearOverview = ({
-  launches,
-  rockets,
-  year
-}: {
-  launches: Launch[]
-  rockets: Rocket[]
-  year: number
-}) => {
+const YearOverview = ({ year }: { year: number }) => {
   return (
     <Wrapper id="contentbox">
       <YearHeader>
