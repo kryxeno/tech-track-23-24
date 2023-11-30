@@ -1,9 +1,19 @@
+import { CircleQuestion } from "grommet-icons"
 import styled from "styled-components"
 
-const Label = ({ text }: { text: React.ReactNode }) => {
+const Label = ({
+  text,
+  question
+}: {
+  text: React.ReactNode
+  question?: boolean
+}) => {
   return (
     <LabelWrapper>
-      <p>{text}</p>
+      <p>
+        {question && <CircleQuestion color="#fff" />}
+        {text}
+      </p>
     </LabelWrapper>
   )
 }
@@ -19,6 +29,12 @@ const LabelWrapper = styled.div`
   width: fit-content;
   p {
     color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    svg {
+      scale: 0.9;
+    }
   }
 `
 

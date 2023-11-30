@@ -2,7 +2,7 @@ import { Launch } from "@/data/api/v4"
 
 export const getConsecutiveStats = (launches: Launch[], currLaunch: Launch) => {
   const reversePastLaunches = launches
-    .filter((prevLaunch) => prevLaunch.date_utc < currLaunch.date_utc)
+    .filter((prevLaunch) => prevLaunch.date_utc <= currLaunch.date_utc)
     .reverse()
   const rocketFailIndex = reversePastLaunches.findIndex(
     (launch) => launch.rocket === currLaunch.rocket && !launch.success
@@ -11,16 +11,16 @@ export const getConsecutiveStats = (launches: Launch[], currLaunch: Launch) => {
     rocketFailIndex === -1
       ? reversePastLaunches.filter(
           (launch) => launch.rocket === currLaunch.rocket && launch.success
-        ).length + 1
-      : rocketFailIndex + 1
+        ).length
+      : rocketFailIndex
 
   const launchFailIndex = reversePastLaunches.findIndex(
     (launch) => !launch.success
   )
   const launchSuccess =
     launchFailIndex === -1
-      ? reversePastLaunches.filter((launch) => launch.success).length + 1
-      : launchFailIndex + 1
+      ? reversePastLaunches.filter((launch) => launch.success).length
+      : launchFailIndex
 
   const rocketFailures = reversePastLaunches.filter(
     (launch) => launch.rocket === currLaunch.rocket && !launch.success

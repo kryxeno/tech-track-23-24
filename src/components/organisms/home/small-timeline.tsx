@@ -111,20 +111,14 @@ const Year = ({
   selectedLaunch,
   setLaunch,
   setYear
-}: {
+}: Props & {
   year: number
-  launches: Launch[]
-  rockets: Rocket[]
   size: number
-  scrollRef: React.RefObject<HTMLDivElement>
-  selectedLaunch: string | null
-  setLaunch: (id: string) => void
-  setYear: (year: number) => void
 }) => {
   const monthsInYear = getAllMonthsInYear(year)
   const { ref } = useInView({
     root: scrollRef.current,
-    threshold: 0.25,
+    threshold: 0.5,
     onChange: (inView) => inView && setYear(year)
   })
 
@@ -159,8 +153,8 @@ const Year = ({
                 return (
                   <RocketWrapper
                     key={launch.id}
-                    isSelected={selectedLaunch === launch.id}
-                    relativeDay={Math.max(
+                    $isSelected={selectedLaunch === launch.id}
+                    $relativeDay={Math.max(
                       3,
                       Math.min(
                         97,
@@ -326,8 +320,8 @@ const RocketSvg = styled.div`
 `
 
 const RocketWrapper = styled.div<{
-  relativeDay: number
-  isSelected: boolean
+  $relativeDay: number
+  $isSelected: boolean
 }>`
   cursor: pointer;
   position: absolute;
@@ -335,7 +329,7 @@ const RocketWrapper = styled.div<{
   width: 2.2rem;
   z-index: 3;
   top: 0;
-  left: ${({ relativeDay }) => relativeDay}%;
+  left: ${({ $relativeDay }) => $relativeDay}%;
   transform: translate(-50%, 0);
   &:hover ${RocketSvg} {
     translate: 0 -40%;
@@ -343,8 +337,8 @@ const RocketWrapper = styled.div<{
       opacity: 1;
     }
   }
-  ${({ isSelected }) =>
-    isSelected &&
+  ${({ $isSelected }) =>
+    $isSelected &&
     `
     ${RocketSvg} {
       translate: 0 -40%;

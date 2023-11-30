@@ -48,7 +48,7 @@
   </p>
 </div>
 
-![ja](./images/timeline_progress.png)
+![ja](/public/detail_live.png)
 
 <!-- TABLE OF CONTENTS -->
 <details>
