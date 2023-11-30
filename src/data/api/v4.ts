@@ -22,7 +22,6 @@ export interface Launch {
     reused: boolean
     landing_success: boolean
   }[]
-  crew: string[]
   year: number
   date_utc: string
 }
@@ -30,8 +29,6 @@ export interface Launch {
 export interface Rocket {
   id: string
   name: string
-  cost_per_launch: number
-  success_rate_pct: number
   images: string[]
 }
 
@@ -68,7 +65,6 @@ export const getLaunches = async (): Promise<Launch[]> => {
           landing_success: core.landing_success
         }
       }, []),
-      crew: launch.crew,
       year: parseInt(launch.date_utc.slice(0, 4)),
       date_utc: launch.date_utc
     }
@@ -81,8 +77,6 @@ export const getRockets = async (): Promise<Rocket[]> => {
       return {
         id: rocket.id,
         name: rocket.name,
-        cost_per_launch: rocket.cost_per_launch,
-        success_rate_pct: rocket.success_rate_pct,
         images: rocket.flickr_images
       }
     }
