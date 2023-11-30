@@ -35,12 +35,12 @@
 <h3 align="center">Tech track Information Design</h3>
 
   <p align="center">
-    hva
+    HVA
     <br />
     <a href="https://github.com/kryxeno/tech-track-23-24"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/kryxeno/tech-track-23-24">View Demo</a>
+    <a href="https://tech-track-23-24-nine.vercel.app/">View Demo</a>
     ·
     <a href="https://github.com/kryxeno/tech-track-23-24/issues">Report Bug</a>
     ·
